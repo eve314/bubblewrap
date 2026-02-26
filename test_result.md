@@ -134,51 +134,63 @@ backend:
 
   - task: "User Profile CRUD"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented GET and PUT /api/users/profile endpoints"
+      - working: true
+        agent: "testing"
+        comment: "✅ User profile CRUD working perfectly. GET /api/users/profile returns complete profile data. PUT /api/users/profile successfully updates bio, grief topics and marks profile as complete when requirements met."
 
   - task: "Browse Users and Matching"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented /api/users/browse with topic filtering"
+      - working: true
+        agent: "testing"
+        comment: "✅ Browse users functionality working correctly. Returns user list excluding current user, filters by grief topic, includes pagination. Found users with matching grief topics successfully."
 
   - task: "Connection Requests"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented send/accept/reject connection request endpoints"
+      - working: true
+        agent: "testing"
+        comment: "✅ Connection requests working fully. Successfully sent connection request, retrieved pending requests for target user, accepted connection and automatically created conversation. All endpoints functional."
 
   - task: "1-to-1 Conversations"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented conversations list and messages CRUD"
+      - working: true
+        agent: "testing"
+        comment: "✅ 1-to-1 conversations fully functional. Can retrieve conversation list, get conversation details with participant info, fetch messages, and send new messages. Conversation updates properly with last message."
 
   - task: "Support Groups"
     implemented: true
