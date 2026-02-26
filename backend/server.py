@@ -519,16 +519,21 @@ async def get_connections(user: User = Depends(get_current_user)):
         {"_id": 0}
     ).to_list(100)
     
-    # Get user info for each connection
-    result = []
-    for conn in connections:
-        other_user_id = conn["to_user_id"] if conn["from_user_id"] == user.user_id else conn["from_user_id"]
-        other_user = await db.users.find_one(
-            {"user_id": other_user_id},
+    # Batch fetch all user info to avoid N+1 queries
+    if connections:
+        other_user_ids = [
+            conn["to_user_id"] if conn["from_user_id"] == user.user_id else conn["from_user_id"]
+            for conn in connections
+        ]
+        users = await db.users.find(
+            {"user_id": {"$in": other_user_ids}},
             {"_id": 0, "user_id": 1, "name": 1, "picture": 1, "bio": 1, "grief_topics": 1}
-        )
-        if other_user:
-            result.append(other_user)
+        ).to_list(len(other_user_ids))
+        user_map = {u["user_id"]: u for u in users}
+        
+        result = [user_map[uid] for uid in other_user_ids if uid in user_map]
+    else:
+        result = []
     
     return {"connections": result}
 
