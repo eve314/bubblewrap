@@ -456,13 +456,17 @@ async def get_connection_requests(user: User = Depends(get_current_user)):
         {"_id": 0}
     ).to_list(100)
     
-    # Get user info for each request
-    for req in requests:
-        from_user = await db.users.find_one(
-            {"user_id": req["from_user_id"]},
+    # Batch fetch all user info to avoid N+1 queries
+    if requests:
+        user_ids = [req["from_user_id"] for req in requests]
+        users = await db.users.find(
+            {"user_id": {"$in": user_ids}},
             {"_id": 0, "user_id": 1, "name": 1, "picture": 1, "bio": 1, "grief_topics": 1}
-        )
-        req["from_user"] = from_user
+        ).to_list(len(user_ids))
+        user_map = {u["user_id"]: u for u in users}
+        
+        for req in requests:
+            req["from_user"] = user_map.get(req["from_user_id"])
     
     return {"requests": requests}
 
