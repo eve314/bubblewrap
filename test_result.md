@@ -206,15 +206,18 @@ backend:
 
   - task: "AI Crisis Detection"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implemented crisis detection using emergentintegrations LLM chat"
+      - working: true
+        agent: "testing"
+        comment: "✅ AI Crisis Detection working perfectly! LLM integration via GPT-4o successfully detects crisis content in messages. Crisis alerts generated with support resources. Emergency support message and helpline resources provided when crisis detected."
 
   - task: "Grief Topics API"
     implemented: true
