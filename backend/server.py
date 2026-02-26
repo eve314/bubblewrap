@@ -547,14 +547,20 @@ async def get_conversations(user: User = Depends(get_current_user)):
         {"_id": 0}
     ).sort("updated_at", -1).to_list(100)
     
-    # Get other participant info for each conversation
-    for conv in conversations:
-        other_user_id = [p for p in conv["participants"] if p != user.user_id][0]
-        other_user = await db.users.find_one(
-            {"user_id": other_user_id},
+    # Batch fetch all user info to avoid N+1 queries
+    if conversations:
+        other_user_ids = [
+            [p for p in conv["participants"] if p != user.user_id][0]
+            for conv in conversations
+        ]
+        users = await db.users.find(
+            {"user_id": {"$in": other_user_ids}},
             {"_id": 0, "user_id": 1, "name": 1, "picture": 1}
-        )
-        conv["other_user"] = other_user
+        ).to_list(len(other_user_ids))
+        user_map = {u["user_id"]: u for u in users}
+        
+        for i, conv in enumerate(conversations):
+            conv["other_user"] = user_map.get(other_user_ids[i])
     
     return {"conversations": conversations}
 
